@@ -1,9 +1,9 @@
 const palettes = {
-  green: 'bg-palm-100 text-palm-800 border-palm-300',
-  gold: 'bg-copra-200 text-copra-600 border-copra-500/40',
-  rust: 'bg-rust-100 text-rust-600 border-rust-500/30',
-  neutral: 'bg-husk-200/50 text-ink-700 border-husk-200',
-  bark: 'bg-bark-900 text-cream-50 border-bark-900',
+  green: 'bg-blue-100 text-blue-800 border-blue-300',
+  gold: 'bg-sky-200 text-sky-600 border-sky-500/40',
+  rust: 'bg-red-100 text-red-600 border-red-500/30',
+  neutral: 'bg-slate-200/50 text-slate-700 border-slate-200',
+  bark: 'bg-slate-900 text-white border-slate-900',
 };
 
 export default function Badge({ children, tone = 'neutral', className = '' }) {

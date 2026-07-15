@@ -41,13 +41,13 @@ export default function Reports() {
     <div>
       <PageHeader title="Reports" description="Generate and filter reports across all business operations." />
 
-      <div className="mb-4 flex flex-wrap gap-1.5 rounded-xl border border-husk-200 bg-cream-50 p-1.5">
+      <div className="mb-4 flex flex-wrap gap-1.5 rounded-xl border border-slate-200 bg-white p-1.5">
         {TABS.map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
             className={`flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium transition-colors ${
-              tab === t.key ? 'bg-palm-700 text-cream-50' : 'text-ink-700 hover:bg-husk-200/40'
+              tab === t.key ? 'bg-blue-700 text-white' : 'text-slate-700 hover:bg-slate-200/40'
             }`}
           >
             <t.icon size={15} /> {t.label}
@@ -56,7 +56,7 @@ export default function Reports() {
       </div>
 
       {(tab === 'sales' || tab === 'purchases') && (
-        <div className="mb-4 flex flex-wrap items-end gap-3 rounded-xl border border-husk-200 bg-cream-50 p-4">
+        <div className="mb-4 flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-4">
           <Field label="From date">
             <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
           </Field>
@@ -64,7 +64,7 @@ export default function Reports() {
             <Input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
           </Field>
           {(from || to) && (
-            <button onClick={() => { setFrom(''); setTo(''); }} className="mb-4 text-sm font-medium text-palm-700 hover:text-palm-600">
+            <button onClick={() => { setFrom(''); setTo(''); }} className="mb-4 text-sm font-medium text-blue-700 hover:text-blue-600">
               Clear filter
             </button>
           )}
@@ -72,7 +72,7 @@ export default function Reports() {
       )}
 
       {tab === 'inventory' && (
-        <div className="mb-4 flex items-end gap-3 rounded-xl border border-husk-200 bg-cream-50 p-4">
+        <div className="mb-4 flex items-end gap-3 rounded-xl border border-slate-200 bg-white p-4">
           <Field label="Category">
             <Select value={category} onChange={(e) => setCategory(e.target.value)}>
               <option value="all">All categories</option>
@@ -88,13 +88,13 @@ export default function Reports() {
         <ReportShell title="Inventory Report" summary={`Total inventory value: ${formatCurrency(inventoryValue)}`}>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-husk-200 bg-husk-700 text-cream-50">
+              <tr className="border-b border-slate-200 bg-slate-600 text-white">
                 <Th>Item</Th><Th>Category</Th><Th align="right">Quantity</Th><Th align="right">Unit Cost</Th><Th align="right">Value</Th><Th>Updated</Th>
               </tr>
             </thead>
             <tbody>
               {filteredInventory.map((i) => (
-                <tr key={i.id} className="border-b border-husk-200/60 last:border-0">
+                <tr key={i.id} className="border-b border-slate-200/60 last:border-0">
                   <Td>{i.name}</Td>
                   <Td>{i.category}</Td>
                   <Td align="right" mono>{i.quantity} {i.unit}</Td>
@@ -112,13 +112,13 @@ export default function Reports() {
         <ReportShell title="Sales Report" summary={`Total sales: ${formatCurrency(salesTotal)} across ${sales.length} transaction${sales.length === 1 ? '' : 's'}`}>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-husk-200 bg-husk-700 text-cream-50">
+              <tr className="border-b border-slate-200 bg-slate-600 text-white">
                 <Th>ID</Th><Th>Date</Th><Th>Customer</Th><Th align="right">Items</Th><Th align="right">Total</Th>
               </tr>
             </thead>
             <tbody>
               {sales.map((s) => (
-                <tr key={s.id} className="border-b border-husk-200/60 last:border-0">
+                <tr key={s.id} className="border-b border-slate-200/60 last:border-0">
                   <Td mono>#{s.id}</Td>
                   <Td>{formatDate(s.date)}</Td>
                   <Td>{customers.find((c) => c.id === s.customerId)?.name || '—'}</Td>
@@ -135,13 +135,13 @@ export default function Reports() {
         <ReportShell title="Purchase Report" summary={`Total purchases: ${formatCurrency(purchasesTotal)} across ${purchases.length} transaction${purchases.length === 1 ? '' : 's'}`}>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-husk-200 bg-husk-700 text-cream-50">
+              <tr className="border-b border-slate-200 bg-slate-600 text-white">
                 <Th>ID</Th><Th>Date</Th><Th>Supplier</Th><Th align="right">Items</Th><Th align="right">Total</Th>
               </tr>
             </thead>
             <tbody>
               {purchases.map((p) => (
-                <tr key={p.id} className="border-b border-husk-200/60 last:border-0">
+                <tr key={p.id} className="border-b border-slate-200/60 last:border-0">
                   <Td mono>#{p.id}</Td>
                   <Td>{formatDate(p.date)}</Td>
                   <Td>{suppliers.find((s) => s.id === p.supplierId)?.name || '—'}</Td>
@@ -158,7 +158,7 @@ export default function Reports() {
         <ReportShell title="Supplier Report" summary={`${suppliers.length} suppliers on record`}>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-husk-200 bg-husk-700 text-cream-50">
+              <tr className="border-b border-slate-200 bg-slate-600 text-white">
                 <Th>Supplier</Th><Th>Contact</Th><Th align="right">Purchases</Th><Th align="right">Total Spent</Th>
               </tr>
             </thead>
@@ -167,7 +167,7 @@ export default function Reports() {
                 const supplierPurchases = db.getAll('purchases').filter((p) => p.supplierId === s.id);
                 const spent = supplierPurchases.reduce((sum, p) => sum + p.totalAmount, 0);
                 return (
-                  <tr key={s.id} className="border-b border-husk-200/60 last:border-0">
+                  <tr key={s.id} className="border-b border-slate-200/60 last:border-0">
                     <Td>{s.name}</Td>
                     <Td>{s.contact}</Td>
                     <Td align="right">{supplierPurchases.length}</Td>
@@ -184,7 +184,7 @@ export default function Reports() {
         <ReportShell title="Customer Report" summary={`${customers.length} customers on record`}>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-husk-200 bg-husk-700 text-cream-50">
+              <tr className="border-b border-slate-200 bg-slate-600 text-white">
                 <Th>Customer</Th><Th>Contact</Th><Th align="right">Purchases</Th><Th align="right">Total Spent</Th>
               </tr>
             </thead>
@@ -193,7 +193,7 @@ export default function Reports() {
                 const customerSales = db.getAll('sales').filter((s) => s.customerId === c.id);
                 const spent = customerSales.reduce((sum, s) => sum + s.totalAmount, 0);
                 return (
-                  <tr key={c.id} className="border-b border-husk-200/60 last:border-0">
+                  <tr key={c.id} className="border-b border-slate-200/60 last:border-0">
                     <Td>{c.name}</Td>
                     <Td>{c.contact}</Td>
                     <Td align="right">{customerSales.length}</Td>
@@ -211,12 +211,12 @@ export default function Reports() {
 
 function ReportShell({ title, summary, children }) {
   return (
-    <div className="rounded-xl border border-husk-200 bg-cream-50 shadow-sm">
-      <div className="flex items-center justify-between border-b border-husk-200 px-4 py-3">
-        <h3 className="font-display flex items-center gap-2 text-base font-semibold text-bark-900">
-          <FileBarChart2 size={17} className="text-palm-700" /> {title}
+    <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
+      <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+        <h3 className="font-display flex items-center gap-2 text-base font-semibold text-slate-900">
+          <FileBarChart2 size={17} className="text-blue-700" /> {title}
         </h3>
-        <span className="text-xs font-medium text-ink-500">{summary}</span>
+        <span className="text-xs font-medium text-slate-500">{summary}</span>
       </div>
       <div className="overflow-x-auto">{children}</div>
     </div>

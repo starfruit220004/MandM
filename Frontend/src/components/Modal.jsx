@@ -21,15 +21,15 @@ export default function Modal({ open, onClose, title, children, size = 'md' }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-bark-950/50 backdrop-blur-[2px]" onClick={onClose} />
+      <div className="absolute inset-0 bg-slate-950/50 backdrop-blur-[2px]" onClick={onClose} />
       <div
-        className={`relative w-full ${widths[size]} max-h-[90vh] overflow-y-auto rounded-xl bg-cream-50 border border-husk-200 shadow-2xl animate-fade-in-up`}
+        className={`relative w-full ${widths[size]} max-h-[90vh] overflow-y-auto rounded-xl bg-white border border-slate-200 shadow-2xl animate-fade-in-up`}
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-husk-200 bg-cream-50/95 backdrop-blur px-5 py-4">
-          <h2 className="font-display text-lg font-semibold text-bark-900">{title}</h2>
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white/95 backdrop-blur px-5 py-4">
+          <h2 className="font-display text-lg font-semibold text-slate-900">{title}</h2>
           <button
             onClick={onClose}
-            className="rounded-md p-1.5 text-ink-500 hover:bg-husk-200/50 hover:text-ink-900 transition-colors"
+            className="rounded-md p-1.5 text-slate-500 hover:bg-slate-200/50 hover:text-slate-900 transition-colors"
             aria-label="Close dialog"
           >
             <X size={18} />

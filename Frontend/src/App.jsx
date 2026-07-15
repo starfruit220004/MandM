@@ -29,7 +29,7 @@ export default function App() {
 
   if (!seeded) {
     return (
-      <div className="flex h-screen items-center justify-center bg-cream-100">
+      <div className="flex h-screen items-center justify-center bg-slate-50">
         <CoconutMark size={44} spin />
       </div>
     );

@@ -121,12 +121,12 @@ export default function Inventory() {
       label: 'Stock',
       sortable: true,
       render: (r) => (
-        <span className={`font-mono ${r.quantity <= r.minStock ? 'font-semibold text-rust-600' : ''}`}>
+        <span className={`font-mono ${r.quantity <= r.minStock ? 'font-semibold text-red-600' : ''}`}>
           {r.quantity} {r.unit}
         </span>
       ),
     },
-    { key: 'minStock', label: 'Min. Stock', sortable: true, render: (r) => <span className="font-mono text-ink-500">{r.minStock} {r.unit}</span> },
+    { key: 'minStock', label: 'Min. Stock', sortable: true, render: (r) => <span className="font-mono text-slate-500">{r.minStock} {r.unit}</span> },
     { key: 'unitCost', label: 'Unit Cost', sortable: true, render: (r) => <span className="font-mono">{formatCurrency(r.unitCost)}</span> },
     {
       key: 'status',
@@ -146,7 +146,7 @@ export default function Inventory() {
       <PageHeader title="Inventory Management" description="Track stock levels for raw, processed, and by-product coconut items.">
         <button
           onClick={openAdd}
-          className="flex items-center gap-1.5 rounded-lg bg-palm-700 px-3.5 py-2 text-sm font-medium text-cream-50 hover:bg-palm-600 transition-colors"
+          className="flex items-center gap-1.5 rounded-lg bg-blue-700 px-3.5 py-2 text-sm font-medium text-white hover:bg-blue-600 transition-colors"
         >
           <Plus size={16} /> Add Item
         </button>
@@ -158,16 +158,16 @@ export default function Inventory() {
         searchKeys={['name', 'category']}
         actions={(row) => (
           <div className="flex justify-end gap-1">
-            <button onClick={() => openStock(row, 'in')} title="Stock in" className="rounded-md p-1.5 text-palm-700 hover:bg-palm-100">
+            <button onClick={() => openStock(row, 'in')} title="Stock in" className="rounded-md p-1.5 text-blue-700 hover:bg-blue-100">
               <PackagePlus size={16} />
             </button>
-            <button onClick={() => openStock(row, 'out')} title="Stock out" className="rounded-md p-1.5 text-copra-600 hover:bg-copra-200">
+            <button onClick={() => openStock(row, 'out')} title="Stock out" className="rounded-md p-1.5 text-sky-600 hover:bg-sky-200">
               <PackageMinus size={16} />
             </button>
-            <button onClick={() => openEdit(row)} title="Edit" className="rounded-md p-1.5 text-ink-700 hover:bg-husk-200/50">
+            <button onClick={() => openEdit(row)} title="Edit" className="rounded-md p-1.5 text-slate-700 hover:bg-slate-200/50">
               <Pencil size={16} />
             </button>
-            <button onClick={() => setDeleteTarget(row)} title="Delete" className="rounded-md p-1.5 text-rust-600 hover:bg-rust-100">
+            <button onClick={() => setDeleteTarget(row)} title="Delete" className="rounded-md p-1.5 text-red-600 hover:bg-red-100">
               <Trash2 size={16} />
             </button>
           </div>
@@ -203,10 +203,10 @@ export default function Inventory() {
             <Input type="number" min="0" step="0.01" value={form.unitCost} onChange={(e) => setForm({ ...form, unitCost: e.target.value })} error={errors.unitCost} />
           </Field>
           <div className="mt-5 flex justify-end gap-2">
-            <button type="button" onClick={() => setModal(null)} className="rounded-lg border border-husk-200 px-4 py-2 text-sm font-medium hover:bg-husk-200/40">
+            <button type="button" onClick={() => setModal(null)} className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium hover:bg-slate-200/40">
               Cancel
             </button>
-            <button type="submit" className="rounded-lg bg-palm-700 px-4 py-2 text-sm font-medium text-cream-50 hover:bg-palm-600">
+            <button type="submit" className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600">
               {editingId ? 'Save changes' : 'Add item'}
             </button>
           </div>
@@ -215,17 +215,17 @@ export default function Inventory() {
 
       <Modal open={!!stockModal} onClose={() => setStockModal(null)} title={`${stockModal?.mode === 'in' ? 'Stock In' : 'Stock Out'} — ${stockModal?.item?.name || ''}`} size="sm">
         <form onSubmit={submitStock}>
-          <p className="mb-3 text-sm text-ink-500">
-            Current stock: <span className="font-mono font-medium text-ink-900">{stockModal?.item?.quantity} {stockModal?.item?.unit}</span>
+          <p className="mb-3 text-sm text-slate-500">
+            Current stock: <span className="font-mono font-medium text-slate-900">{stockModal?.item?.quantity} {stockModal?.item?.unit}</span>
           </p>
           <Field label={`Quantity to ${stockModal?.mode === 'in' ? 'add' : 'remove'}`} required>
             <Input type="number" min="0" step="0.01" autoFocus value={stockQty} onChange={(e) => setStockQty(e.target.value)} placeholder="0" />
           </Field>
           <div className="mt-5 flex justify-end gap-2">
-            <button type="button" onClick={() => setStockModal(null)} className="rounded-lg border border-husk-200 px-4 py-2 text-sm font-medium hover:bg-husk-200/40">
+            <button type="button" onClick={() => setStockModal(null)} className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium hover:bg-slate-200/40">
               Cancel
             </button>
-            <button type="submit" className="rounded-lg bg-palm-700 px-4 py-2 text-sm font-medium text-cream-50 hover:bg-palm-600">
+            <button type="submit" className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600">
               Confirm
             </button>
           </div>

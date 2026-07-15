@@ -32,10 +32,10 @@ export function ToastProvider({ children }) {
             key={t.id}
             className={`animate-toast-in flex items-start gap-2.5 rounded-lg border px-4 py-3 shadow-lg backdrop-blur-sm ${
               t.type === 'success'
-                ? 'bg-palm-800/95 border-palm-600 text-palm-50'
+                ? 'bg-blue-800/95 border-blue-600 text-blue-50'
                 : t.type === 'error'
-                ? 'bg-rust-600/95 border-rust-500 text-white'
-                : 'bg-bark-800/95 border-husk-600 text-cream-50'
+                ? 'bg-red-600/95 border-red-500 text-white'
+                : 'bg-slate-800/95 border-slate-500 text-white'
             }`}
           >
             {t.type === 'success' && <CheckCircle2 size={18} className="mt-0.5 shrink-0" />}

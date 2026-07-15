@@ -80,7 +80,7 @@ export default function Suppliers() {
   return (
     <div>
       <PageHeader title="Supplier Management" description="Manage coconut and copra suppliers and their purchase history.">
-        <button onClick={openAdd} className="flex items-center gap-1.5 rounded-lg bg-palm-700 px-3.5 py-2 text-sm font-medium text-cream-50 hover:bg-palm-600">
+        <button onClick={openAdd} className="flex items-center gap-1.5 rounded-lg bg-blue-700 px-3.5 py-2 text-sm font-medium text-white hover:bg-blue-600">
           <Plus size={16} /> Add Supplier
         </button>
       </PageHeader>
@@ -91,13 +91,13 @@ export default function Suppliers() {
         searchKeys={['name', 'contact', 'email', 'address']}
         actions={(row) => (
           <div className="flex justify-end gap-1">
-            <button onClick={() => setHistoryTarget(row)} title="Transaction history" className="rounded-md p-1.5 text-ink-700 hover:bg-husk-200/50">
+            <button onClick={() => setHistoryTarget(row)} title="Transaction history" className="rounded-md p-1.5 text-slate-700 hover:bg-slate-200/50">
               <History size={16} />
             </button>
-            <button onClick={() => openEdit(row)} title="Edit" className="rounded-md p-1.5 text-ink-700 hover:bg-husk-200/50">
+            <button onClick={() => openEdit(row)} title="Edit" className="rounded-md p-1.5 text-slate-700 hover:bg-slate-200/50">
               <Pencil size={16} />
             </button>
-            <button onClick={() => setDeleteTarget(row)} title="Delete" className="rounded-md p-1.5 text-rust-600 hover:bg-rust-100">
+            <button onClick={() => setDeleteTarget(row)} title="Delete" className="rounded-md p-1.5 text-red-600 hover:bg-red-100">
               <Trash2 size={16} />
             </button>
           </div>
@@ -119,10 +119,10 @@ export default function Suppliers() {
             <Textarea value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} />
           </Field>
           <div className="mt-5 flex justify-end gap-2">
-            <button type="button" onClick={() => setModal(null)} className="rounded-lg border border-husk-200 px-4 py-2 text-sm font-medium hover:bg-husk-200/40">
+            <button type="button" onClick={() => setModal(null)} className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium hover:bg-slate-200/40">
               Cancel
             </button>
-            <button type="submit" className="rounded-lg bg-palm-700 px-4 py-2 text-sm font-medium text-cream-50 hover:bg-palm-600">
+            <button type="submit" className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600">
               {editingId ? 'Save changes' : 'Add supplier'}
             </button>
           </div>
@@ -131,16 +131,16 @@ export default function Suppliers() {
 
       <Modal open={!!historyTarget} onClose={() => setHistoryTarget(null)} title={`Purchase History — ${historyTarget?.name || ''}`} size="lg">
         {purchases.length === 0 ? (
-          <p className="py-8 text-center text-sm text-ink-500">No purchase records for this supplier yet.</p>
+          <p className="py-8 text-center text-sm text-slate-500">No purchase records for this supplier yet.</p>
         ) : (
           <div className="space-y-3">
             {purchases.map((p) => (
-              <div key={p.id} className="rounded-lg border border-husk-200 p-3">
+              <div key={p.id} className="rounded-lg border border-slate-200 p-3">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="font-medium text-ink-900">Purchase #{p.id}</span>
-                  <span className="text-ink-500">{formatDate(p.date)}</span>
+                  <span className="font-medium text-slate-900">Purchase #{p.id}</span>
+                  <span className="text-slate-500">{formatDate(p.date)}</span>
                 </div>
-                <ul className="mt-2 space-y-1 text-xs text-ink-700">
+                <ul className="mt-2 space-y-1 text-xs text-slate-700">
                   {p.items.map((it, i) => (
                     <li key={i} className="flex justify-between">
                       <span>{it.itemName} × {it.qty}</span>
@@ -148,7 +148,7 @@ export default function Suppliers() {
                     </li>
                   ))}
                 </ul>
-                <div className="mt-2 flex justify-between border-t border-husk-200 pt-2 text-sm font-semibold text-ink-900">
+                <div className="mt-2 flex justify-between border-t border-slate-200 pt-2 text-sm font-semibold text-slate-900">
                   <span>Total</span>
                   <span className="font-mono">{formatCurrency(p.totalAmount)}</span>
                 </div>

@@ -137,7 +137,7 @@ export default function Purchases() {
   return (
     <div>
       <PageHeader title="Purchase Management" description="Record coconut and copra purchases from suppliers.">
-        <button onClick={openAdd} className="flex items-center gap-1.5 rounded-lg bg-palm-700 px-3.5 py-2 text-sm font-medium text-cream-50 hover:bg-palm-600">
+        <button onClick={openAdd} className="flex items-center gap-1.5 rounded-lg bg-blue-700 px-3.5 py-2 text-sm font-medium text-white hover:bg-blue-600">
           <Plus size={16} /> Record Purchase
         </button>
       </PageHeader>
@@ -148,11 +148,11 @@ export default function Purchases() {
         searchKeys={[(r) => suppliers.find((s) => s.id === r.supplierId)?.name]}
         actions={(row) => (
           <div className="flex justify-end gap-1">
-            <button onClick={() => setViewTarget(row)} className="rounded-md px-2 py-1 text-xs font-medium text-ink-700 hover:bg-husk-200/50">View</button>
-            <button onClick={() => openEdit(row)} title="Edit" className="rounded-md p-1.5 text-ink-700 hover:bg-husk-200/50">
+            <button onClick={() => setViewTarget(row)} className="rounded-md px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-200/50">View</button>
+            <button onClick={() => openEdit(row)} title="Edit" className="rounded-md p-1.5 text-slate-700 hover:bg-slate-200/50">
               <Pencil size={16} />
             </button>
-            <button onClick={() => setDeleteTarget(row)} title="Delete" className="rounded-md p-1.5 text-rust-600 hover:bg-rust-100">
+            <button onClick={() => setDeleteTarget(row)} title="Delete" className="rounded-md p-1.5 text-red-600 hover:bg-red-100">
               <Trash2 size={16} />
             </button>
           </div>
@@ -174,13 +174,13 @@ export default function Purchases() {
           </div>
 
           <div className="mt-2 mb-2 flex items-center justify-between">
-            <p className="text-sm font-medium text-ink-900">Items purchased</p>
-            <button type="button" onClick={addLine} className="text-xs font-medium text-palm-700 hover:text-palm-600">+ Add line item</button>
+            <p className="text-sm font-medium text-slate-900">Items purchased</p>
+            <button type="button" onClick={addLine} className="text-xs font-medium text-blue-700 hover:text-blue-600">+ Add line item</button>
           </div>
 
           <div className="space-y-2">
             {lines.map((l, i) => (
-              <div key={i} className="rounded-lg border border-husk-200 p-2.5">
+              <div key={i} className="rounded-lg border border-slate-200 p-2.5">
                 <div className="grid grid-cols-[1fr_90px_110px_auto] gap-2 items-start">
                   <Select value={l.itemId} onChange={(e) => updateLine(i, 'itemId', e.target.value)}>
                     <option value="">Select item…</option>
@@ -188,25 +188,25 @@ export default function Purchases() {
                   </Select>
                   <Input type="number" min="0" step="0.01" placeholder="Qty" value={l.qty} onChange={(e) => updateLine(i, 'qty', e.target.value)} />
                   <Input type="number" min="0" step="0.01" placeholder="Unit price" value={l.unitPrice} onChange={(e) => updateLine(i, 'unitPrice', e.target.value)} />
-                  <button type="button" onClick={() => removeLine(i)} className="rounded-md p-2 text-rust-500 hover:bg-rust-100">
+                  <button type="button" onClick={() => removeLine(i)} className="rounded-md p-2 text-red-500 hover:bg-red-100">
                     <Trash size={15} />
                   </button>
                 </div>
-                {errors[`line-${i}`] && <p className="mt-1 text-xs font-medium text-rust-600">{errors[`line-${i}`]}</p>}
-                <p className="mt-1 text-right text-xs text-ink-500 font-mono">
+                {errors[`line-${i}`] && <p className="mt-1 text-xs font-medium text-red-600">{errors[`line-${i}`]}</p>}
+                <p className="mt-1 text-right text-xs text-slate-500 font-mono">
                   Subtotal: {formatCurrency((Number(l.qty) || 0) * (Number(l.unitPrice) || 0))}
                 </p>
               </div>
             ))}
           </div>
 
-          <div className="mt-3 flex justify-end border-t border-husk-200 pt-3">
-            <p className="font-display text-lg font-semibold text-bark-900">Total: {formatCurrency(total)}</p>
+          <div className="mt-3 flex justify-end border-t border-slate-200 pt-3">
+            <p className="font-display text-lg font-semibold text-slate-900">Total: {formatCurrency(total)}</p>
           </div>
 
           <div className="mt-4 flex justify-end gap-2">
-            <button type="button" onClick={() => setModal(null)} className="rounded-lg border border-husk-200 px-4 py-2 text-sm font-medium hover:bg-husk-200/40">Cancel</button>
-            <button type="submit" className="rounded-lg bg-palm-700 px-4 py-2 text-sm font-medium text-cream-50 hover:bg-palm-600">
+            <button type="button" onClick={() => setModal(null)} className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium hover:bg-slate-200/40">Cancel</button>
+            <button type="submit" className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600">
               {editingId ? 'Save changes' : 'Record purchase'}
             </button>
           </div>
@@ -217,10 +217,10 @@ export default function Purchases() {
         {viewTarget && (
           <div>
             <div className="mb-3 grid grid-cols-2 gap-2 text-sm">
-              <div><span className="text-ink-500">Supplier:</span> <span className="font-medium">{suppliers.find((s) => s.id === viewTarget.supplierId)?.name}</span></div>
-              <div><span className="text-ink-500">Date:</span> <span className="font-medium">{formatDate(viewTarget.date)}</span></div>
+              <div><span className="text-slate-500">Supplier:</span> <span className="font-medium">{suppliers.find((s) => s.id === viewTarget.supplierId)?.name}</span></div>
+              <div><span className="text-slate-500">Date:</span> <span className="font-medium">{formatDate(viewTarget.date)}</span></div>
             </div>
-            <ul className="space-y-1.5 rounded-lg border border-husk-200 p-3 text-sm">
+            <ul className="space-y-1.5 rounded-lg border border-slate-200 p-3 text-sm">
               {viewTarget.items.map((it, i) => (
                 <li key={i} className="flex justify-between">
                   <span>{it.itemName} × {it.qty} @ {formatCurrency(it.unitPrice)}</span>
@@ -228,7 +228,7 @@ export default function Purchases() {
                 </li>
               ))}
             </ul>
-            <div className="mt-3 flex justify-between border-t border-husk-200 pt-3 font-semibold text-ink-900">
+            <div className="mt-3 flex justify-between border-t border-slate-200 pt-3 font-semibold text-slate-900">
               <span>Total</span>
               <span className="font-mono">{formatCurrency(viewTarget.totalAmount)}</span>
             </div>

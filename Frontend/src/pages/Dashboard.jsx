@@ -90,42 +90,42 @@ export default function Dashboard() {
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-5">
-        <div className="lg:col-span-3 rounded-xl border border-husk-200 bg-cream-50 p-4 shadow-sm">
-          <h3 className="font-display text-base font-semibold text-bark-900">Sales — last 7 days</h3>
+        <div className="lg:col-span-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <h3 className="font-display text-base font-semibold text-slate-900">Sales — last 7 days</h3>
           <div className="mt-3 h-64">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data.trend} margin={{ left: -18, right: 8 }}>
                 <defs>
                   <linearGradient id="salesFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--color-palm-500)" stopOpacity={0.45} />
-                    <stop offset="100%" stopColor="var(--color-palm-500)" stopOpacity={0.03} />
+                    <stop offset="0%" stopColor="var(--color-blue-500)" stopOpacity={0.45} />
+                    <stop offset="100%" stopColor="var(--color-blue-500)" stopOpacity={0.03} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid stroke="var(--color-husk-200)" vertical={false} />
-                <XAxis dataKey="day" tick={{ fontSize: 12, fill: 'var(--color-ink-500)' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11, fill: 'var(--color-ink-500)' }} axisLine={false} tickLine={false} width={60} tickFormatter={(v) => `₱${v}`} />
+                <CartesianGrid stroke="var(--color-slate-200)" vertical={false} />
+                <XAxis dataKey="day" tick={{ fontSize: 12, fill: 'var(--color-slate-500)' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: 'var(--color-slate-500)' }} axisLine={false} tickLine={false} width={60} tickFormatter={(v) => `₱${v}`} />
                 <Tooltip
                   formatter={(v) => formatCurrency(v)}
-                  contentStyle={{ borderRadius: 10, border: '1px solid var(--color-husk-200)', fontSize: 12 }}
+                  contentStyle={{ borderRadius: 10, border: '1px solid var(--color-slate-200)', fontSize: 12 }}
                 />
-                <Area type="monotone" dataKey="total" stroke="var(--color-palm-600)" strokeWidth={2} fill="url(#salesFill)" />
+                <Area type="monotone" dataKey="total" stroke="var(--color-blue-600)" strokeWidth={2} fill="url(#salesFill)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="lg:col-span-2 rounded-xl border border-husk-200 bg-cream-50 p-4 shadow-sm">
-          <h3 className="font-display text-base font-semibold text-bark-900">Stock levels</h3>
+        <div className="lg:col-span-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <h3 className="font-display text-base font-semibold text-slate-900">Stock levels</h3>
           <div className="mt-3 h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.stockLevels} margin={{ left: -18, right: 8 }}>
-                <CartesianGrid stroke="var(--color-husk-200)" vertical={false} />
-                <XAxis dataKey="name" tick={{ fontSize: 10, fill: 'var(--color-ink-500)' }} axisLine={false} tickLine={false} interval={0} angle={-20} textAnchor="end" height={50} />
-                <YAxis tick={{ fontSize: 11, fill: 'var(--color-ink-500)' }} axisLine={false} tickLine={false} width={40} />
-                <Tooltip contentStyle={{ borderRadius: 10, border: '1px solid var(--color-husk-200)', fontSize: 12 }} />
+                <CartesianGrid stroke="var(--color-slate-200)" vertical={false} />
+                <XAxis dataKey="name" tick={{ fontSize: 10, fill: 'var(--color-slate-500)' }} axisLine={false} tickLine={false} interval={0} angle={-20} textAnchor="end" height={50} />
+                <YAxis tick={{ fontSize: 11, fill: 'var(--color-slate-500)' }} axisLine={false} tickLine={false} width={40} />
+                <Tooltip contentStyle={{ borderRadius: 10, border: '1px solid var(--color-slate-200)', fontSize: 12 }} />
                 <Bar dataKey="qty" radius={[4, 4, 0, 0]}>
                   {data.stockLevels.map((entry, i) => (
-                    <Cell key={i} fill={entry.qty <= entry.min ? 'var(--color-rust-500)' : 'var(--color-palm-500)'} />
+                    <Cell key={i} fill={entry.qty <= entry.min ? 'var(--color-red-500)' : 'var(--color-blue-500)'} />
                   ))}
                 </Bar>
               </BarChart>
@@ -135,43 +135,43 @@ export default function Dashboard() {
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-5">
-        <div className="lg:col-span-3 rounded-xl border border-husk-200 bg-cream-50 shadow-sm">
-          <div className="border-b border-husk-200 px-4 py-3">
-            <h3 className="font-display text-base font-semibold text-bark-900">Recent transactions</h3>
+        <div className="lg:col-span-3 rounded-xl border border-slate-200 bg-white shadow-sm">
+          <div className="border-b border-slate-200 px-4 py-3">
+            <h3 className="font-display text-base font-semibold text-slate-900">Recent transactions</h3>
           </div>
-          <div className="divide-y divide-husk-200/60">
+          <div className="divide-y divide-slate-200/60">
             {data.recent.map((t, i) => (
               <div key={i} className="flex items-center justify-between px-4 py-3 text-sm">
                 <div className="flex items-center gap-3">
                   <Badge tone={t.type === 'Sale' ? 'green' : 'gold'}>{t.type}</Badge>
                   <div>
-                    <p className="font-medium text-ink-900">{t.party || '—'}</p>
-                    <p className="text-xs text-ink-500">{formatDate(t.date)}</p>
+                    <p className="font-medium text-slate-900">{t.party || '—'}</p>
+                    <p className="text-xs text-slate-500">{formatDate(t.date)}</p>
                   </div>
                 </div>
-                <span className="font-mono text-sm font-medium text-ink-900">{formatCurrency(t.amount)}</span>
+                <span className="font-mono text-sm font-medium text-slate-900">{formatCurrency(t.amount)}</span>
               </div>
             ))}
-            {data.recent.length === 0 && <p className="px-4 py-8 text-center text-sm text-ink-500">No transactions yet.</p>}
+            {data.recent.length === 0 && <p className="px-4 py-8 text-center text-sm text-slate-500">No transactions yet.</p>}
           </div>
         </div>
 
-        <div className="lg:col-span-2 rounded-xl border border-husk-200 bg-cream-50 shadow-sm">
-          <div className="flex items-center justify-between border-b border-husk-200 px-4 py-3">
-            <h3 className="font-display text-base font-semibold text-bark-900">Low-stock alerts</h3>
+        <div className="lg:col-span-2 rounded-xl border border-slate-200 bg-white shadow-sm">
+          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+            <h3 className="font-display text-base font-semibold text-slate-900">Low-stock alerts</h3>
             {data.lowStock.length > 0 && <Badge tone="rust">{data.lowStock.length} item{data.lowStock.length > 1 ? 's' : ''}</Badge>}
           </div>
-          <div className="divide-y divide-husk-200/60">
+          <div className="divide-y divide-slate-200/60">
             {data.lowStock.map((item) => (
               <div key={item.id} className="flex items-center justify-between px-4 py-3 text-sm">
                 <div>
-                  <p className="font-medium text-ink-900">{item.name}</p>
-                  <p className="text-xs text-ink-500">Min. stock: {item.minStock} {item.unit}</p>
+                  <p className="font-medium text-slate-900">{item.name}</p>
+                  <p className="text-xs text-slate-500">Min. stock: {item.minStock} {item.unit}</p>
                 </div>
-                <span className="font-mono text-sm font-semibold text-rust-600">{item.quantity} {item.unit}</span>
+                <span className="font-mono text-sm font-semibold text-red-600">{item.quantity} {item.unit}</span>
               </div>
             ))}
-            {data.lowStock.length === 0 && <p className="px-4 py-8 text-center text-sm text-ink-500">All stock levels are healthy.</p>}
+            {data.lowStock.length === 0 && <p className="px-4 py-8 text-center text-sm text-slate-500">All stock levels are healthy.</p>}
           </div>
         </div>
       </div>

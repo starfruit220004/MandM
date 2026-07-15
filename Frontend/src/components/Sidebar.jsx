@@ -32,19 +32,19 @@ export default function Sidebar({ open, onClose }) {
 
   return (
     <>
-      {open && <div className="fixed inset-0 z-30 bg-bark-950/50 lg:hidden" onClick={onClose} />}
+      {open && <div className="fixed inset-0 z-30 bg-slate-950/50 lg:hidden" onClick={onClose} />}
       <aside
-        className={`fixed z-40 inset-y-0 left-0 w-64 shrink-0 bg-bark-900 text-cream-100 flex flex-col transition-transform duration-200 lg:static lg:translate-x-0 ${
+        className={`fixed z-40 inset-y-0 left-0 w-64 shrink-0 bg-slate-900 text-slate-50 flex flex-col transition-transform duration-200 lg:static lg:translate-x-0 ${
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex items-center gap-2.5 px-5 py-5 border-b border-bark-700">
+        <div className="flex items-center gap-2.5 px-5 py-5 border-b border-slate-700">
           <CoconutMark size={30} />
           <div className="leading-tight">
-            <p className="font-display text-base font-semibold text-cream-50">CocoTrade</p>
-            <p className="text-[11px] text-copra-400 tracking-wide">Business Manager</p>
+            <p className="font-display text-base font-semibold text-white">CocoTrade</p>
+            <p className="text-[11px] text-sky-400 tracking-wide">Business Manager</p>
           </div>
-          <button onClick={onClose} className="ml-auto rounded-md p-1 text-cream-100/70 hover:text-cream-50 lg:hidden">
+          <button onClick={onClose} className="ml-auto rounded-md p-1 text-slate-50/70 hover:text-white lg:hidden">
             <X size={18} />
           </button>
         </div>
@@ -59,8 +59,8 @@ export default function Sidebar({ open, onClose }) {
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                   isActive
-                    ? 'bg-palm-700 text-cream-50 shadow-sm'
-                    : 'text-cream-100/75 hover:bg-bark-800 hover:text-cream-50'
+                    ? 'bg-blue-700 text-white shadow-sm'
+                    : 'text-slate-50/75 hover:bg-slate-800 hover:text-white'
                 }`
               }
             >
@@ -70,7 +70,7 @@ export default function Sidebar({ open, onClose }) {
           ))}
         </nav>
 
-        <div className="px-4 py-4 border-t border-bark-700 text-[11px] text-cream-100/50">
+        <div className="px-4 py-4 border-t border-slate-700 text-[11px] text-slate-50/50">
           © {new Date().getFullYear()} CocoTrade Systems
         </div>
       </aside>
