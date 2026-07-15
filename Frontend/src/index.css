@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: 'Fraunces', serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --color-bark-950: #1c130d;
+  --color-bark-900: #2b1d14;
+  --color-bark-800: #3b2a1e;
+  --color-bark-700: #4d3a2c;
+
+  --color-husk-700: #5c4130;
+  --color-husk-600: #7a5a41;
+  --color-husk-400: #a98868;
+  --color-husk-200: #dcc5aa;
+
+  --color-palm-900: #1f3a24;
+  --color-palm-800: #274830;
+  --color-palm-700: #2f5233;
+  --color-palm-600: #3a5f3a;
+  --color-palm-500: #4a7548;
+  --color-palm-400: #6e9a5c;
+  --color-palm-300: #9dc088;
+  --color-palm-100: #e2ecd9;
+  --color-palm-50: #f1f6ec;
+
+  --color-copra-600: #a9843f;
+  --color-copra-500: #c9a66b;
+  --color-copra-400: #dcbf8c;
+  --color-copra-200: #f0e2c5;
+  --color-copra-100: #f7eeda;
+
+  --color-cream-100: #faf6ee;
+  --color-cream-50: #fdfbf6;
+
+  --color-rust-600: #8a3a24;
+  --color-rust-500: #a6462b;
+  --color-rust-100: #f4ded7;
+
+  --color-ink-900: #211d17;
+  --color-ink-700: #453e33;
+  --color-ink-500: #736a5c;
+  --color-ink-300: #a89e8d;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-cream-100);
+  color: var(--color-ink-900);
+}
+
+::selection {
+  background-color: var(--color-copra-400);
+  color: var(--color-bark-950);
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-husk-200); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-copra-500); }
+
+@keyframes ring-spin {
+  to { transform: rotate(360deg); }
+}
+.animate-ring-spin {
+  animation: ring-spin 1.4s linear infinite;
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fade-in-up .25s ease-out;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.animate-toast-in {
+  animation: toast-in .2s ease-out;
+}

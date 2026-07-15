@@ -1,0 +1,169 @@
+import { useState } from 'react';
+import { Plus, Pencil, Trash2, History } from 'lucide-react';
+import { db, formatCurrency, formatDate } from '../lib/storage';
+import { useToast } from '../lib/ToastContext';
+import PageHeader from '../components/PageHeader';
+import DataTable from '../components/DataTable';
+import Modal from '../components/Modal';
+import ConfirmDialog from '../components/ConfirmDialog';
+import { Field, Input, Textarea } from '../components/FormField';
+
+const emptyForm = { name: '', address: '', contact: '', email: '' };
+
+export default function Customers() {
+  const toast = useToast();
+  const [rows, setRows] = useState(() => db.getAll('customers'));
+  const [modal, setModal] = useState(null);
+  const [form, setForm] = useState(emptyForm);
+  const [errors, setErrors] = useState({});
+  const [editingId, setEditingId] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [historyTarget, setHistoryTarget] = useState(null);
+
+  function refresh() {
+    setRows(db.getAll('customers'));
+  }
+
+  function openAdd() {
+    setForm(emptyForm);
+    setErrors({});
+    setEditingId(null);
+    setModal('form');
+  }
+
+  function openEdit(row) {
+    setForm({ name: row.name, address: row.address, contact: row.contact, email: row.email });
+    setErrors({});
+    setEditingId(row.id);
+    setModal('form');
+  }
+
+  function validate() {
+    const e = {};
+    if (!form.name.trim()) e.name = 'Customer name is required.';
+    if (!form.contact.trim()) e.contact = 'Contact number is required.';
+    if (form.email && !/^\S+@\S+\.\S+$/.test(form.email)) e.email = 'Enter a valid email address.';
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!validate()) return;
+    if (editingId) {
+      db.update('customers', editingId, form);
+      toast.success('Customer updated.');
+    } else {
+      db.create('customers', form);
+      toast.success('Customer added.');
+    }
+    refresh();
+    setModal(null);
+  }
+
+  function handleDelete() {
+    db.remove('customers', deleteTarget.id);
+    toast.success('Customer deleted.');
+    setDeleteTarget(null);
+    refresh();
+  }
+
+  const sales = historyTarget ? db.getAll('sales').filter((s) => s.customerId === historyTarget.id) : [];
+
+  const columns = [
+    { key: 'name', label: 'Customer', sortable: true },
+    { key: 'contact', label: 'Contact', sortable: true },
+    { key: 'email', label: 'Email', sortable: true },
+    { key: 'address', label: 'Address' },
+  ];
+
+  return (
+    <div>
+      <PageHeader title="Customer Management" description="Manage buyers of coconut products and view their purchase history.">
+        <button onClick={openAdd} className="flex items-center gap-1.5 rounded-lg bg-palm-700 px-3.5 py-2 text-sm font-medium text-cream-50 hover:bg-palm-600">
+          <Plus size={16} /> Add Customer
+        </button>
+      </PageHeader>
+
+      <DataTable
+        columns={columns}
+        rows={rows}
+        searchKeys={['name', 'contact', 'email', 'address']}
+        actions={(row) => (
+          <div className="flex justify-end gap-1">
+            <button onClick={() => setHistoryTarget(row)} title="Purchase history" className="rounded-md p-1.5 text-ink-700 hover:bg-husk-200/50">
+              <History size={16} />
+            </button>
+            <button onClick={() => openEdit(row)} title="Edit" className="rounded-md p-1.5 text-ink-700 hover:bg-husk-200/50">
+              <Pencil size={16} />
+            </button>
+            <button onClick={() => setDeleteTarget(row)} title="Delete" className="rounded-md p-1.5 text-rust-600 hover:bg-rust-100">
+              <Trash2 size={16} />
+            </button>
+          </div>
+        )}
+      />
+
+      <Modal open={modal === 'form'} onClose={() => setModal(null)} title={editingId ? 'Edit Customer' : 'Add Customer'}>
+        <form onSubmit={handleSubmit}>
+          <Field label="Customer name" required error={errors.name}>
+            <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} error={errors.name} />
+          </Field>
+          <Field label="Contact number" required error={errors.contact}>
+            <Input value={form.contact} onChange={(e) => setForm({ ...form, contact: e.target.value })} placeholder="09XX-XXX-XXXX" error={errors.contact} />
+          </Field>
+          <Field label="Email" error={errors.email}>
+            <Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} error={errors.email} />
+          </Field>
+          <Field label="Address">
+            <Textarea value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} />
+          </Field>
+          <div className="mt-5 flex justify-end gap-2">
+            <button type="button" onClick={() => setModal(null)} className="rounded-lg border border-husk-200 px-4 py-2 text-sm font-medium hover:bg-husk-200/40">
+              Cancel
+            </button>
+            <button type="submit" className="rounded-lg bg-palm-700 px-4 py-2 text-sm font-medium text-cream-50 hover:bg-palm-600">
+              {editingId ? 'Save changes' : 'Add customer'}
+            </button>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal open={!!historyTarget} onClose={() => setHistoryTarget(null)} title={`Purchase History — ${historyTarget?.name || ''}`} size="lg">
+        {sales.length === 0 ? (
+          <p className="py-8 text-center text-sm text-ink-500">No sales records for this customer yet.</p>
+        ) : (
+          <div className="space-y-3">
+            {sales.map((s) => (
+              <div key={s.id} className="rounded-lg border border-husk-200 p-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="font-medium text-ink-900">Sale #{s.id}</span>
+                  <span className="text-ink-500">{formatDate(s.date)}</span>
+                </div>
+                <ul className="mt-2 space-y-1 text-xs text-ink-700">
+                  {s.items.map((it, i) => (
+                    <li key={i} className="flex justify-between">
+                      <span>{it.itemName} × {it.qty}</span>
+                      <span className="font-mono">{formatCurrency(it.total)}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-2 flex justify-between border-t border-husk-200 pt-2 text-sm font-semibold text-ink-900">
+                  <span>Total</span>
+                  <span className="font-mono">{formatCurrency(s.totalAmount)}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Modal>
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        message={<>Are you sure you want to delete <strong>{deleteTarget?.name}</strong>? This action cannot be undone.</>}
+      />
+    </div>
+  );
+}
