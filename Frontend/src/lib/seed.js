@@ -23,75 +23,70 @@ export function seedIfNeeded() {
   ]);
 
   db.seedTable('suppliers', [
-    { id: 1, name: 'Zamboanga Copra Growers Coop', address: 'Sitio Lumbayao, Zamboanga City', contact: '0917-330-8841', email: 'contact@zcgc.ph', createdAt: daysAgo(800), updatedAt: daysAgo(800) },
-    { id: 2, name: 'Bautista Coconut Farms', address: 'Barangay San Roque, Curuan, Zamboanga City', contact: '0918-442-1190', email: 'bautistafarms@gmail.com', createdAt: daysAgo(650), updatedAt: daysAgo(650) },
-    { id: 3, name: 'Isabela Coco Suppliers Inc.', address: 'Isabela City, Basilan', contact: '0920-556-3302', email: 'sales@isabelacoco.ph', createdAt: daysAgo(400), updatedAt: daysAgo(400) },
-    { id: 4, name: 'Mindanao Husk & Copra Traders', address: 'Sinunuc, Zamboanga City', contact: '0917-660-9954', email: 'info@mhct.ph', createdAt: daysAgo(200), updatedAt: daysAgo(200) },
+    { id: 1, name: 'Zamboanga Copra Growers Coop', contactPerson: 'Juan Dela Cruz', address: 'Sitio Lumbayao, Zamboanga City', contact: '0917-330-8841', email: 'contact@zcgc.ph', createdAt: daysAgo(800), updatedAt: daysAgo(800) },
+    { id: 2, name: 'Bautista Coconut Farms', contactPerson: 'Maria Bautista', address: 'Barangay San Roque, Curuan, Zamboanga City', contact: '0918-442-1190', email: 'bautistafarms@gmail.com', createdAt: daysAgo(650), updatedAt: daysAgo(650) },
+    { id: 3, name: 'Isabela Coco Suppliers Inc.', contactPerson: 'Pedro Santiago', address: 'Isabela City, Basilan', contact: '0920-556-3302', email: 'sales@isabelacoco.ph', createdAt: daysAgo(400), updatedAt: daysAgo(400) },
+    { id: 4, name: 'Mindanao Husk & Copra Traders', contactPerson: 'Ahmad Ali', address: 'Sinunuc, Zamboanga City', contact: '0917-660-9954', email: 'info@mhct.ph', createdAt: daysAgo(200), updatedAt: daysAgo(200) },
   ]);
 
   db.seedTable('customers', [
-    { id: 1, name: 'Southern Oil Mills Corp.', address: 'Ayala, Zamboanga City', contact: '0917-880-2213', email: 'procurement@southernoil.ph', createdAt: daysAgo(600), updatedAt: daysAgo(600) },
-    { id: 2, name: 'Dela Cruz Sari-Sari & Trading', address: 'Tetuan, Zamboanga City', contact: '0918-224-7761', email: 'delacruztrading@gmail.com', createdAt: daysAgo(300), updatedAt: daysAgo(300) },
-    { id: 3, name: 'Pacific Desiccated Coconut Co.', address: 'Guiwan, Zamboanga City', contact: '0920-113-8842', email: 'orders@pacificdesiccated.ph', createdAt: daysAgo(250), updatedAt: daysAgo(250) },
-    { id: 4, name: 'Villareal Copra Export', address: 'Baliwasan, Zamboanga City', contact: '0917-556-9021', email: 'villareal.export@gmail.com', createdAt: daysAgo(150), updatedAt: daysAgo(150) },
+    { id: 1, name: 'Southern Oil Mills Corp.', contactPerson: 'Roberto Carlos', address: 'Ayala, Zamboanga City', contact: '0917-880-2213', email: 'procurement@southernoil.ph', createdAt: daysAgo(600), updatedAt: daysAgo(600) },
+    { id: 2, name: 'Dela Cruz Sari-Sari & Trading', contactPerson: 'Elena Dela Cruz', address: 'Tetuan, Zamboanga City', contact: '0918-224-7761', email: 'delacruztrading@gmail.com', createdAt: daysAgo(300), updatedAt: daysAgo(300) },
+    { id: 3, name: 'Pacific Desiccated Coconut Co.', contactPerson: 'Arthur Pendragon', address: 'Guiwan, Zamboanga City', contact: '0920-113-8842', email: 'orders@pacificdesiccated.ph', createdAt: daysAgo(250), updatedAt: daysAgo(250) },
+    { id: 4, name: 'Villareal Copra Export', contactPerson: 'Sofia Villareal', address: 'Baliwasan, Zamboanga City', contact: '0917-556-9021', email: 'villareal.export@gmail.com', createdAt: daysAgo(150), updatedAt: daysAgo(150) },
   ]);
 
   db.seedTable('inventory', [
-    { id: 1, name: 'Whole Coconuts (Buko)', category: 'Raw', unit: 'pcs', quantity: 4200, minStock: 1000, unitCost: 12.5, updatedAt: daysAgo(1) },
-    { id: 2, name: 'Copra (Sun-dried)', category: 'Processed', unit: 'kg', quantity: 850, minStock: 1000, unitCost: 32, updatedAt: daysAgo(1) },
-    { id: 3, name: 'Coconut Husk', category: 'By-product', unit: 'kg', quantity: 2100, minStock: 500, unitCost: 3.5, updatedAt: daysAgo(2) },
-    { id: 4, name: 'Coconut Shell (Charcoal grade)', category: 'By-product', unit: 'kg', quantity: 640, minStock: 300, unitCost: 6, updatedAt: daysAgo(3) },
-    { id: 5, name: 'Desiccated Coconut', category: 'Processed', unit: 'kg', quantity: 180, minStock: 200, unitCost: 55, updatedAt: daysAgo(1) },
-    { id: 6, name: 'Virgin Coconut Oil (VCO)', category: 'Processed', unit: 'liters', quantity: 95, minStock: 100, unitCost: 180, updatedAt: daysAgo(2) },
-    { id: 7, name: 'Coconut Fiber (Coir)', category: 'By-product', unit: 'kg', quantity: 1300, minStock: 400, unitCost: 4.2, updatedAt: daysAgo(4) },
+    { id: 1, name: 'Copra (Dried Coconut)', category: 'Processed', unit: 'kg', quantity: 5200, minStock: 1000, unitCost: 32, updatedAt: daysAgo(1) },
+    { id: 2, name: 'Charcoal', category: 'Processed', unit: 'kg', quantity: 3100, minStock: 500, unitCost: 15, updatedAt: daysAgo(1) },
   ]);
 
   db.seedTable('stockMovements', [
     { id: 1, itemId: 1, type: 'in', qty: 2000, date: daysAgo(6), reference: 'Purchase #1' },
     { id: 2, itemId: 2, type: 'in', qty: 1200, date: daysAgo(5), reference: 'Purchase #2' },
     { id: 3, itemId: 1, type: 'out', qty: 450, date: daysAgo(2), reference: 'Sale #1' },
-    { id: 4, itemId: 6, type: 'out', qty: 40, date: daysAgo(1), reference: 'Sale #3' },
+    { id: 4, itemId: 2, type: 'out', qty: 400, date: daysAgo(1), reference: 'Sale #2' },
   ]);
 
   db.seedTable('purchases', [
     {
       id: 1, supplierId: 1, date: daysAgo(6),
-      items: [{ itemId: 1, itemName: 'Whole Coconuts (Buko)', qty: 2000, unitPrice: 11.8, total: 23600 }],
-      totalAmount: 23600, createdAt: daysAgo(6), updatedAt: daysAgo(6),
+      items: [{ itemId: 1, itemName: 'Copra (Dried Coconut)', qty: 2000, unitPrice: 29.5, total: 59000 }],
+      totalAmount: 59000, createdAt: daysAgo(6), updatedAt: daysAgo(6),
     },
     {
       id: 2, supplierId: 2, date: daysAgo(5),
-      items: [{ itemId: 2, itemName: 'Copra (Sun-dried)', qty: 1200, unitPrice: 29.5, total: 35400 }],
-      totalAmount: 35400, createdAt: daysAgo(5), updatedAt: daysAgo(5),
+      items: [{ itemId: 2, itemName: 'Charcoal', qty: 1200, unitPrice: 12.0, total: 14400 }],
+      totalAmount: 14400, createdAt: daysAgo(5), updatedAt: daysAgo(5),
     },
     {
       id: 3, supplierId: 4, date: daysAgo(3),
       items: [
-        { itemId: 4, itemName: 'Coconut Shell (Charcoal grade)', qty: 500, unitPrice: 5.2, total: 2600 },
-        { itemId: 7, itemName: 'Coconut Fiber (Coir)', qty: 800, unitPrice: 3.8, total: 3040 },
+        { itemId: 1, itemName: 'Copra (Dried Coconut)', qty: 500, unitPrice: 29.5, total: 14750 },
+        { itemId: 2, itemName: 'Charcoal', qty: 800, unitPrice: 12.0, total: 9600 },
       ],
-      totalAmount: 5640, createdAt: daysAgo(3), updatedAt: daysAgo(3),
+      totalAmount: 24350, createdAt: daysAgo(3), updatedAt: daysAgo(3),
     },
   ]);
 
   db.seedTable('sales', [
     {
       id: 1, customerId: 1, date: daysAgo(2),
-      items: [{ itemId: 1, itemName: 'Whole Coconuts (Buko)', qty: 450, price: 15, total: 6750 }],
-      totalAmount: 6750, createdAt: daysAgo(2), updatedAt: daysAgo(2),
+      items: [{ itemId: 1, itemName: 'Copra (Dried Coconut)', qty: 450, price: 35, total: 15750 }],
+      totalAmount: 15750, createdAt: daysAgo(2), updatedAt: daysAgo(2),
     },
     {
       id: 2, customerId: 3, date: daysAgo(1),
-      items: [{ itemId: 5, itemName: 'Desiccated Coconut', qty: 60, price: 68, total: 4080 }],
-      totalAmount: 4080, createdAt: daysAgo(1), updatedAt: daysAgo(1),
+      items: [{ itemId: 2, itemName: 'Charcoal', qty: 400, price: 18, total: 7200 }],
+      totalAmount: 7200, createdAt: daysAgo(1), updatedAt: daysAgo(1),
     },
     {
       id: 3, customerId: 2, date: todayISO(),
       items: [
-        { itemId: 6, itemName: 'Virgin Coconut Oil (VCO)', qty: 40, price: 220, total: 8800 },
-        { itemId: 3, itemName: 'Coconut Husk', qty: 300, price: 5, total: 1500 },
+        { itemId: 1, itemName: 'Copra (Dried Coconut)', qty: 300, price: 35, total: 10500 },
+        { itemId: 2, itemName: 'Charcoal', qty: 150, price: 18, total: 2700 },
       ],
-      totalAmount: 10300, createdAt: todayISO(), updatedAt: todayISO(),
+      totalAmount: 13200, createdAt: todayISO(), updatedAt: todayISO(),
     },
   ]);
 

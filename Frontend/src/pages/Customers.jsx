@@ -8,7 +8,7 @@ import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { Field, Input, Textarea } from '../components/FormField';
 
-const emptyForm = { name: '', address: '', contact: '', email: '' };
+const emptyForm = { name: '', contactPerson: '', address: '', contact: '', email: '' };
 
 export default function Customers() {
   const toast = useToast();
@@ -32,7 +32,7 @@ export default function Customers() {
   }
 
   function openEdit(row) {
-    setForm({ name: row.name, address: row.address, contact: row.contact, email: row.email });
+    setForm({ name: row.name, contactPerson: row.contactPerson || '', address: row.address, contact: row.contact, email: row.email });
     setErrors({});
     setEditingId(row.id);
     setModal('form');
@@ -72,6 +72,7 @@ export default function Customers() {
 
   const columns = [
     { key: 'name', label: 'Customer', sortable: true },
+    { key: 'contactPerson', label: 'Contact Person', sortable: true },
     { key: 'contact', label: 'Contact', sortable: true },
     { key: 'email', label: 'Email', sortable: true },
     { key: 'address', label: 'Address' },
@@ -88,7 +89,7 @@ export default function Customers() {
       <DataTable
         columns={columns}
         rows={rows}
-        searchKeys={['name', 'contact', 'email', 'address']}
+        searchKeys={['name', 'contactPerson', 'contact', 'email', 'address']}
         actions={(row) => (
           <div className="flex justify-end gap-1">
             <button onClick={() => setHistoryTarget(row)} title="Purchase history" className="rounded-md p-1.5 text-slate-700 hover:bg-slate-200/50">
@@ -108,6 +109,9 @@ export default function Customers() {
         <form onSubmit={handleSubmit}>
           <Field label="Customer name" required error={errors.name}>
             <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} error={errors.name} />
+          </Field>
+          <Field label="Contact person's name">
+            <Input value={form.contactPerson} onChange={(e) => setForm({ ...form, contactPerson: e.target.value })} />
           </Field>
           <Field label="Contact number" required error={errors.contact}>
             <Input value={form.contact} onChange={(e) => setForm({ ...form, contact: e.target.value })} placeholder="09XX-XXX-XXXX" error={errors.contact} />

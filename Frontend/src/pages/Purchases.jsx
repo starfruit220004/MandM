@@ -9,7 +9,7 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import { Field, Input, Select } from '../components/FormField';
 
 function emptyLine() {
-  return { itemId: '', qty: '', unitPrice: '' };
+  return { itemId: '', qty: '', unitPrice: '', moistureContent: '', weightDeduction: '' };
 }
 
 export default function Purchases() {
@@ -43,7 +43,7 @@ export default function Purchases() {
   function openEdit(p) {
     setSupplierId(String(p.supplierId));
     setDate(p.date);
-    setLines(p.items.map((it) => ({ itemId: String(it.itemId), qty: it.qty, unitPrice: it.unitPrice })));
+    setLines(p.items.map((it) => ({ itemId: String(it.itemId), qty: it.qty, unitPrice: it.unitPrice, moistureContent: it.moistureContent || '', weightDeduction: it.weightDeduction || '' })));
     setErrors({});
     setEditingId(p.id);
     setModal('form');
@@ -61,7 +61,10 @@ export default function Purchases() {
     setLines((prev) => (prev.length > 1 ? prev.filter((_, i) => i !== idx) : prev));
   }
 
-  const total = lines.reduce((sum, l) => sum + (Number(l.qty) || 0) * (Number(l.unitPrice) || 0), 0);
+  const total = lines.reduce((sum, l) => {
+    const net = (Number(l.qty) || 0) - (Number(l.weightDeduction) || 0);
+    return sum + Math.max(0, net) * (Number(l.unitPrice) || 0);
+  }, 0);
 
   function validate() {
     const e = {};
@@ -84,7 +87,10 @@ export default function Purchases() {
       const item = inventory.find((i) => i.id === Number(l.itemId));
       const qty = Number(l.qty);
       const unitPrice = Number(l.unitPrice);
-      return { itemId: Number(l.itemId), itemName: item?.name, qty, unitPrice, total: qty * unitPrice };
+      const moistureContent = Number(l.moistureContent) || 0;
+      const weightDeduction = Number(l.weightDeduction) || 0;
+      const netQty = Math.max(0, qty - weightDeduction);
+      return { itemId: Number(l.itemId), itemName: item?.name, qty, unitPrice, moistureContent, weightDeduction, netQty, total: netQty * unitPrice };
     });
     const totalAmount = items.reduce((s, it) => s + it.total, 0);
 
@@ -93,11 +99,11 @@ export default function Purchases() {
       const prev = db.get('purchases', editingId);
       prev.items.forEach((it) => {
         const inv = db.get('inventory', it.itemId);
-        if (inv) db.update('inventory', it.itemId, { quantity: inv.quantity - it.qty });
+        if (inv) db.update('inventory', it.itemId, { quantity: inv.quantity - (it.netQty ?? it.qty) });
       });
       items.forEach((it) => {
         const inv = db.get('inventory', it.itemId);
-        if (inv) db.update('inventory', it.itemId, { quantity: inv.quantity + it.qty });
+        if (inv) db.update('inventory', it.itemId, { quantity: inv.quantity + it.netQty });
       });
       db.update('purchases', editingId, { supplierId: Number(supplierId), date, items, totalAmount });
       toast.success('Purchase record updated.');
@@ -105,8 +111,8 @@ export default function Purchases() {
       const purchase = db.create('purchases', { supplierId: Number(supplierId), date, items, totalAmount });
       items.forEach((it) => {
         const inv = db.get('inventory', it.itemId);
-        if (inv) db.update('inventory', it.itemId, { quantity: inv.quantity + it.qty });
-        db.create('stockMovements', { itemId: it.itemId, type: 'in', qty: it.qty, date, reference: `Purchase #${purchase.id}` });
+        if (inv) db.update('inventory', it.itemId, { quantity: inv.quantity + it.netQty });
+        db.create('stockMovements', { itemId: it.itemId, type: 'in', qty: it.netQty, date, reference: `Purchase #${purchase.id}` });
       });
       toast.success('Purchase recorded and inventory updated.');
     }
@@ -118,7 +124,7 @@ export default function Purchases() {
     const p = deleteTarget;
     p.items.forEach((it) => {
       const inv = db.get('inventory', it.itemId);
-      if (inv) db.update('inventory', it.itemId, { quantity: Math.max(0, inv.quantity - it.qty) });
+      if (inv) db.update('inventory', it.itemId, { quantity: Math.max(0, inv.quantity - (it.netQty ?? it.qty)) });
     });
     db.remove('purchases', p.id);
     toast.success('Purchase record deleted and stock reverted.');
@@ -181,12 +187,14 @@ export default function Purchases() {
           <div className="space-y-2">
             {lines.map((l, i) => (
               <div key={i} className="rounded-lg border border-slate-200 p-2.5">
-                <div className="grid grid-cols-[1fr_90px_110px_auto] gap-2 items-start">
+                <div className="grid grid-cols-1 sm:grid-cols-[1fr_80px_90px_80px_90px_auto] gap-2 items-start">
                   <Select value={l.itemId} onChange={(e) => updateLine(i, 'itemId', e.target.value)}>
                     <option value="">Select item…</option>
                     {inventory.map((it) => <option key={it.id} value={it.id}>{it.name}</option>)}
                   </Select>
-                  <Input type="number" min="0" step="0.01" placeholder="Qty" value={l.qty} onChange={(e) => updateLine(i, 'qty', e.target.value)} />
+                  <Input type="number" min="0" step="0.01" placeholder="Gross Qty" value={l.qty} onChange={(e) => updateLine(i, 'qty', e.target.value)} />
+                  <Input type="number" min="0" step="0.1" placeholder="Moisture %" value={l.moistureContent} onChange={(e) => updateLine(i, 'moistureContent', e.target.value)} />
+                  <Input type="number" min="0" step="0.01" placeholder="Ded. Qty" value={l.weightDeduction} onChange={(e) => updateLine(i, 'weightDeduction', e.target.value)} />
                   <Input type="number" min="0" step="0.01" placeholder="Unit price" value={l.unitPrice} onChange={(e) => updateLine(i, 'unitPrice', e.target.value)} />
                   <button type="button" onClick={() => removeLine(i)} className="rounded-md p-2 text-red-500 hover:bg-red-100">
                     <Trash size={15} />
@@ -194,7 +202,8 @@ export default function Purchases() {
                 </div>
                 {errors[`line-${i}`] && <p className="mt-1 text-xs font-medium text-red-600">{errors[`line-${i}`]}</p>}
                 <p className="mt-1 text-right text-xs text-slate-500 font-mono">
-                  Subtotal: {formatCurrency((Number(l.qty) || 0) * (Number(l.unitPrice) || 0))}
+                  Net Qty: {Math.max(0, (Number(l.qty) || 0) - (Number(l.weightDeduction) || 0))} | 
+                  Subtotal: {formatCurrency(Math.max(0, (Number(l.qty) || 0) - (Number(l.weightDeduction) || 0)) * (Number(l.unitPrice) || 0))}
                 </p>
               </div>
             ))}
@@ -223,7 +232,16 @@ export default function Purchases() {
             <ul className="space-y-1.5 rounded-lg border border-slate-200 p-3 text-sm">
               {viewTarget.items.map((it, i) => (
                 <li key={i} className="flex justify-between">
-                  <span>{it.itemName} × {it.qty} @ {formatCurrency(it.unitPrice)}</span>
+                  <div className="flex flex-col">
+                    <span>{it.itemName} × {it.qty} (Gross) @ {formatCurrency(it.unitPrice)}</span>
+                    {(it.moistureContent > 0 || it.weightDeduction > 0) && (
+                      <span className="text-xs text-slate-500">
+                        {it.moistureContent > 0 ? `Moisture: ${it.moistureContent}% ` : ''}
+                        {it.weightDeduction > 0 ? `| Deduction: ${it.weightDeduction} ` : ''}
+                        | Net Qty: {it.netQty ?? it.qty}
+                      </span>
+                    )}
+                  </div>
                   <span className="font-mono">{formatCurrency(it.total)}</span>
                 </li>
               ))}

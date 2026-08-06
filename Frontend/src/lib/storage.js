@@ -3,7 +3,7 @@
 // for real API calls once the backend is wired up — the shape (getAll/get/
 // create/update/remove) mirrors a typical REST resource client on purpose.
 
-const NS = 'coco_erp_v1';
+const NS = 'coco_erp_v3';
 
 function key(table) {
   return `${NS}:${table}`;
