@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
-import { FileBarChart2, Boxes, ShoppingCart, Receipt, UserSquare2, Users } from 'lucide-react';
+import { useMemo, useState, useRef } from 'react';
+import { FileBarChart2, Boxes, ShoppingCart, Receipt, UserSquare2, Users, FileText, File } from 'lucide-react';
 import { db, formatCurrency, formatDate } from '../lib/storage';
 import PageHeader from '../components/PageHeader';
 import { Field, Input, Select } from '../components/FormField';
+import html2pdf from 'html2pdf.js';
 
 const TABS = [
   { key: 'inventory', label: 'Inventory', icon: Boxes },
@@ -39,7 +40,7 @@ export default function Reports() {
 
   return (
     <div>
-      <PageHeader title="Reports" description="Generate and filter reports across all business operations." />
+      <PageHeader title="Reports" description="Generate and filter reports across all business operations. You can export these to Word or PDF." />
 
       <div className="mb-4 flex flex-wrap gap-1.5 rounded-xl border border-slate-200 bg-white p-1.5">
         {TABS.map((t) => (
@@ -47,7 +48,7 @@ export default function Reports() {
             key={t.key}
             onClick={() => setTab(t.key)}
             className={`flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium transition-colors ${
-              tab === t.key ? 'bg-blue-700 text-white' : 'text-slate-700 hover:bg-slate-200/40'
+              tab === t.key ? 'bg-blue-700 text-white shadow-sm' : 'text-slate-700 hover:bg-slate-200/40'
             }`}
           >
             <t.icon size={15} /> {t.label}
@@ -56,7 +57,7 @@ export default function Reports() {
       </div>
 
       {(tab === 'sales' || tab === 'purchases') && (
-        <div className="mb-4 flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-4">
+        <div className="mb-4 flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <Field label="From date">
             <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
           </Field>
@@ -72,7 +73,7 @@ export default function Reports() {
       )}
 
       {tab === 'inventory' && (
-        <div className="mb-4 flex items-end gap-3 rounded-xl border border-slate-200 bg-white p-4">
+        <div className="mb-4 flex items-end gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <Field label="Category">
             <Select value={category} onChange={(e) => setCategory(e.target.value)}>
               <option value="all">All categories</option>
@@ -86,7 +87,7 @@ export default function Reports() {
 
       {tab === 'inventory' && (
         <ReportShell title="Inventory Report" summary={`Total inventory value: ${formatCurrency(inventoryValue)}`}>
-          <table className="w-full text-sm">
+          <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-600 text-white">
                 <Th>Item</Th><Th>Category</Th><Th align="right">Quantity</Th><Th align="right">Unit Cost</Th><Th align="right">Value</Th><Th>Updated</Th>
@@ -94,7 +95,7 @@ export default function Reports() {
             </thead>
             <tbody>
               {filteredInventory.map((i) => (
-                <tr key={i.id} className="border-b border-slate-200/60 last:border-0">
+                <tr key={i.id} className="border-b border-slate-200/60 last:border-0 hover:bg-slate-50/50">
                   <Td>{i.name}</Td>
                   <Td>{i.category}</Td>
                   <Td align="right" mono>{i.quantity} {i.unit}</Td>
@@ -103,6 +104,11 @@ export default function Reports() {
                   <Td>{formatDate(i.updatedAt)}</Td>
                 </tr>
               ))}
+              {filteredInventory.length === 0 && (
+                <tr>
+                  <td colSpan="6" className="p-4 text-center text-slate-500">No records found.</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </ReportShell>
@@ -110,7 +116,7 @@ export default function Reports() {
 
       {tab === 'sales' && (
         <ReportShell title="Sales Report" summary={`Total sales: ${formatCurrency(salesTotal)} across ${sales.length} transaction${sales.length === 1 ? '' : 's'}`}>
-          <table className="w-full text-sm">
+          <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-600 text-white">
                 <Th>ID</Th><Th>Date</Th><Th>Customer</Th><Th align="right">Items</Th><Th align="right">Total</Th>
@@ -118,7 +124,7 @@ export default function Reports() {
             </thead>
             <tbody>
               {sales.map((s) => (
-                <tr key={s.id} className="border-b border-slate-200/60 last:border-0">
+                <tr key={s.id} className="border-b border-slate-200/60 last:border-0 hover:bg-slate-50/50">
                   <Td mono>#{s.id}</Td>
                   <Td>{formatDate(s.date)}</Td>
                   <Td>{customers.find((c) => c.id === s.customerId)?.name || '—'}</Td>
@@ -126,6 +132,11 @@ export default function Reports() {
                   <Td align="right" mono>{formatCurrency(s.totalAmount)}</Td>
                 </tr>
               ))}
+              {sales.length === 0 && (
+                <tr>
+                  <td colSpan="5" className="p-4 text-center text-slate-500">No records found.</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </ReportShell>
@@ -133,7 +144,7 @@ export default function Reports() {
 
       {tab === 'purchases' && (
         <ReportShell title="Purchase Report" summary={`Total purchases: ${formatCurrency(purchasesTotal)} across ${purchases.length} transaction${purchases.length === 1 ? '' : 's'}`}>
-          <table className="w-full text-sm">
+          <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-600 text-white">
                 <Th>ID</Th><Th>Date</Th><Th>Supplier</Th><Th align="right">Items</Th><Th align="right">Total</Th>
@@ -141,7 +152,7 @@ export default function Reports() {
             </thead>
             <tbody>
               {purchases.map((p) => (
-                <tr key={p.id} className="border-b border-slate-200/60 last:border-0">
+                <tr key={p.id} className="border-b border-slate-200/60 last:border-0 hover:bg-slate-50/50">
                   <Td mono>#{p.id}</Td>
                   <Td>{formatDate(p.date)}</Td>
                   <Td>{suppliers.find((s) => s.id === p.supplierId)?.name || '—'}</Td>
@@ -149,6 +160,11 @@ export default function Reports() {
                   <Td align="right" mono>{formatCurrency(p.totalAmount)}</Td>
                 </tr>
               ))}
+              {purchases.length === 0 && (
+                <tr>
+                  <td colSpan="5" className="p-4 text-center text-slate-500">No records found.</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </ReportShell>
@@ -156,7 +172,7 @@ export default function Reports() {
 
       {tab === 'suppliers' && (
         <ReportShell title="Supplier Report" summary={`${suppliers.length} suppliers on record`}>
-          <table className="w-full text-sm">
+          <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-600 text-white">
                 <Th>Supplier</Th><Th>Contact</Th><Th align="right">Purchases</Th><Th align="right">Total Spent</Th>
@@ -167,7 +183,7 @@ export default function Reports() {
                 const supplierPurchases = db.getAll('purchases').filter((p) => p.supplierId === s.id);
                 const spent = supplierPurchases.reduce((sum, p) => sum + p.totalAmount, 0);
                 return (
-                  <tr key={s.id} className="border-b border-slate-200/60 last:border-0">
+                  <tr key={s.id} className="border-b border-slate-200/60 last:border-0 hover:bg-slate-50/50">
                     <Td>{s.name}</Td>
                     <Td>{s.contact}</Td>
                     <Td align="right">{supplierPurchases.length}</Td>
@@ -182,7 +198,7 @@ export default function Reports() {
 
       {tab === 'customers' && (
         <ReportShell title="Customer Report" summary={`${customers.length} customers on record`}>
-          <table className="w-full text-sm">
+          <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-600 text-white">
                 <Th>Customer</Th><Th>Contact</Th><Th align="right">Purchases</Th><Th align="right">Total Spent</Th>
@@ -193,7 +209,7 @@ export default function Reports() {
                 const customerSales = db.getAll('sales').filter((s) => s.customerId === c.id);
                 const spent = customerSales.reduce((sum, s) => sum + s.totalAmount, 0);
                 return (
-                  <tr key={c.id} className="border-b border-slate-200/60 last:border-0">
+                  <tr key={c.id} className="border-b border-slate-200/60 last:border-0 hover:bg-slate-50/50">
                     <Td>{c.name}</Td>
                     <Td>{c.contact}</Td>
                     <Td align="right">{customerSales.length}</Td>
@@ -210,22 +226,94 @@ export default function Reports() {
 }
 
 function ReportShell({ title, summary, children }) {
+  const contentRef = useRef(null);
+
+  const exportToPDF = () => {
+    const element = contentRef.current;
+    if (!element) return;
+    const opt = {
+      margin:       [0.5, 0.5, 0.5, 0.5],
+      filename:     `${title.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true },
+      jsPDF:        { unit: 'in', format: 'letter', orientation: 'landscape' }
+    };
+    html2pdf().set(opt).from(element).save();
+  };
+
+  const exportToWord = () => {
+    const element = contentRef.current;
+    if (!element) return;
+    
+    // Inject styling directly so MS Word picks it up
+    const html = `
+      <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+      <head>
+        <meta charset='utf-8'>
+        <title>${title}</title>
+        <style>
+          body { font-family: 'Segoe UI', Arial, sans-serif; color: #333; }
+          h1 { color: #1d4ed8; font-size: 24px; border-bottom: 2px solid #1d4ed8; padding-bottom: 5px; }
+          p.summary { font-size: 14px; color: #555; margin-bottom: 20px; }
+          table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+          th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; }
+          th { background-color: #475569; color: #ffffff; font-weight: bold; text-transform: uppercase; }
+          .right { text-align: right; }
+          .mono { font-family: monospace; }
+        </style>
+      </head>
+      <body>
+        <h1>${title}</h1>
+        <p class="summary"><strong>Summary:</strong> ${summary}</p>
+        ${element.outerHTML}
+      </body>
+      </html>
+    `;
+    
+    const blob = new Blob(['\\ufeff', html], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${title.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.doc`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
-    <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-        <h3 className="font-display flex items-center gap-2 text-base font-semibold text-slate-900">
-          <FileBarChart2 size={17} className="text-blue-700" /> {title}
-        </h3>
-        <span className="text-xs font-medium text-slate-500">{summary}</span>
+    <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-200 px-5 py-4 gap-3 bg-slate-50/50">
+        <div>
+          <h3 className="font-display flex items-center gap-2 text-lg font-bold text-slate-900">
+            <FileBarChart2 size={20} className="text-blue-700" /> {title}
+          </h3>
+          <span className="text-sm font-medium text-slate-500 mt-1 block">{summary}</span>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <button onClick={exportToWord} className="flex items-center justify-center gap-2 rounded-lg bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-100 transition-colors border border-blue-200 shadow-sm">
+            <FileText size={16} /> Export to Word
+          </button>
+          <button onClick={exportToPDF} className="flex items-center justify-center gap-2 rounded-lg bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-100 transition-colors border border-rose-200 shadow-sm">
+            <File size={16} /> Export to PDF
+          </button>
+        </div>
       </div>
-      <div className="overflow-x-auto">{children}</div>
+      <div className="overflow-x-auto">
+        <div ref={contentRef} className="p-0">
+          {children}
+        </div>
+      </div>
     </div>
   );
 }
 
 function Th({ children, align = 'left' }) {
-  return <th className={`px-4 py-3 text-${align} text-xs font-semibold uppercase tracking-wide whitespace-nowrap`}>{children}</th>;
+  // Apply a class "right" if aligned right so Word can style it via CSS
+  const alignClass = align === 'right' ? 'right' : '';
+  return <th align={align} className={`px-5 py-3 text-${align} text-xs font-semibold uppercase tracking-wider ${alignClass} whitespace-nowrap`}>{children}</th>;
 }
 function Td({ children, align = 'left', mono = false }) {
-  return <td className={`px-4 py-2.5 text-${align} ${mono ? 'font-mono' : ''}`}>{children}</td>;
+  const alignClass = align === 'right' ? 'right' : '';
+  const monoClass = mono ? 'mono' : '';
+  return <td align={align} className={`px-5 py-3 text-${align} ${mono ? 'font-mono' : ''} ${alignClass} ${monoClass} text-sm text-slate-700`}>{children}</td>;
 }
