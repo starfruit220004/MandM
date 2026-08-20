@@ -10,7 +10,7 @@ export default function Topbar({ onMenu }) {
 
   function handleLogout() {
     logout();
-    navigate('/login');
+    navigate('/mamik');
   }
 
   return (

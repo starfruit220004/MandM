@@ -9,13 +9,14 @@ import {
   UserSquare2,
   UsersRound,
   FileBarChart2,
+  Globe,
   X,
 } from 'lucide-react';
 import CoconutMark from './CoconutMark';
 import { useAuth } from '../lib/AuthContext';
 
 const nav = [
-  { to: '/', label: 'Dashboard', icon: LayoutDashboard, roles: ['admin', 'employee'] },
+  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['admin', 'employee'] },
   { to: '/inventory', label: 'Inventory', icon: Boxes, roles: ['admin', 'employee'] },
   { to: '/purchases', label: 'Purchases', icon: ShoppingCart, roles: ['admin', 'employee'] },
   { to: '/sales', label: 'Sales', icon: Receipt, roles: ['admin', 'employee'] },
@@ -24,6 +25,7 @@ const nav = [
   { to: '/customers', label: 'Customers', icon: Users, roles: ['admin', 'employee'] },
   { to: '/employees', label: 'Employees', icon: UsersRound, roles: ['admin'] },
   { to: '/reports', label: 'Reports', icon: FileBarChart2, roles: ['admin', 'employee'] },
+  { to: '/landing-cms', label: 'Landing CMS', icon: Globe, roles: ['admin'] },
 ];
 
 export default function Sidebar({ open, onClose }) {

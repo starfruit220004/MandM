@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model employees {
+  id        Int       @id @default(autoincrement())
+  firstName String
+  lastName  String
+  email     String?
+  phone     String?
+  position  String?
+  role      String?
+  active    Boolean?  @default(true)
+  dateHired String?
+  createdAt String?
+  updatedAt String?
+  users     users[]
+}
+
+model users {
+  id         Int        @id @default(autoincrement())
+  username   String     @unique
+  password   String
+  role       String?
+  employeeId Int?
+  employee   employees? @relation(fields: [employeeId], references: [id])
+  active     Boolean?   @default(true)
+  createdAt  String?
+  updatedAt  String?
+}
+
+model suppliers {
+  id            Int         @id @default(autoincrement())
+  name          String
+  contactPerson String?
+  address       String?
+  contact       String?
+  email         String?
+  createdAt     String?
+  updatedAt     String?
+  purchases     purchases[]
+}
+
+model customers {
+  id            Int          @id @default(autoincrement())
+  name          String
+  contactPerson String?
+  address       String?
+  contact       String?
+  email         String?
+  createdAt     String?
+  updatedAt     String?
+  sales         sales[]
+  deliveries    deliveries[]
+}
+
+model inventory {
+  id             Int              @id @default(autoincrement())
+  name           String
+  category       String?
+  unit           String?
+  quantity       Float?           @default(0)
+  minStock       Float?           @default(0)
+  unitCost       Float?           @default(0)
+  updatedAt      String?
+  stockMovements stockMovements[]
+}
+
+model stockMovements {
+  id        Int        @id @default(autoincrement())
+  itemId    Int?
+  item      inventory? @relation(fields: [itemId], references: [id])
+  type      String?
+  qty       Float?
+  date      String?
+  reference String?
+}
+
+model purchases {
+  id          Int        @id @default(autoincrement())
+  supplierId  Int?
+  supplier    suppliers? @relation(fields: [supplierId], references: [id])
+  date        String?
+  items       String?
+  totalAmount Float?
+  createdAt   String?
+  updatedAt   String?
+}
+
+model sales {
+  id          Int          @id @default(autoincrement())
+  customerId  Int?
+  customer    customers?   @relation(fields: [customerId], references: [id])
+  date        String?
+  items       String?
+  totalAmount Float?
+  createdAt   String?
+  updatedAt   String?
+  deliveries  deliveries[]
+}
+
+model deliveries {
+  id            Int        @id @default(autoincrement())
+  saleId        Int?
+  sale          sales?     @relation(fields: [saleId], references: [id])
+  customerId    Int?
+  customer      customers? @relation(fields: [customerId], references: [id])
+  address       String?
+  scheduledDate String?
+  status        String?
+  createdAt     String?
+  updatedAt     String?
+}
+
+model landing_page {
+  id            Int     @id @default(autoincrement())
+  title         String?
+  subtitle      String?
+  hero_image    String?
+  features      String?
+  contact_email String?
+  updatedAt     String?
+}

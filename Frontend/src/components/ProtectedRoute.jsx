@@ -13,7 +13,7 @@ export function ProtectedRoute({ children, adminOnly = false }) {
     );
   }
 
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/mamik" replace />;
   if (adminOnly && user.role !== 'admin') return <Navigate to="/" replace />;
 
   return children;

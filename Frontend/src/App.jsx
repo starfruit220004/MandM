@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './lib/AuthContext';
 import { ToastProvider } from './lib/ToastContext';
-import { seedIfNeeded } from './lib/seed';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import CoconutMark from './components/CoconutMark';
 
+import Landing from './pages/Landing';
+import LandingCMS from './pages/LandingCMS';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard';
 import Inventory from './pages/Inventory';
 import Purchases from './pages/Purchases';
@@ -20,27 +21,14 @@ import Reports from './pages/Reports';
 import NotFound from './pages/NotFound';
 
 export default function App() {
-  const [seeded, setSeeded] = useState(false);
-
-  useEffect(() => {
-    seedIfNeeded();
-    setSeeded(true);
-  }, []);
-
-  if (!seeded) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-slate-50">
-        <CoconutMark size={44} spin />
-      </div>
-    );
-  }
-
   return (
     <ToastProvider>
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Landing />} />
+            <Route path="/mamik" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route
               element={
                 <ProtectedRoute>
@@ -48,7 +36,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             >
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/purchases" element={<Purchases />} />
               <Route path="/sales" element={<Sales />} />
@@ -60,6 +48,14 @@ export default function App() {
                 element={
                   <ProtectedRoute adminOnly>
                     <Employees />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/landing-cms"
+                element={
+                  <ProtectedRoute adminOnly>
+                    <LandingCMS />
                   </ProtectedRoute>
                 }
               />

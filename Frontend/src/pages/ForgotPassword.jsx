@@ -1,35 +1,45 @@
 import { useState } from 'react';
-import { Navigate, useNavigate, Link } from 'react-router-dom';
-import { Eye, EyeOff, Lock, User, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Mail, ArrowLeft } from 'lucide-react';
 import CoconutMark from '../components/CoconutMark';
-import { useAuth } from '../lib/AuthContext';
+import { api } from '../lib/api';
 
-export default function Login() {
-  const { user, login } = useAuth();
-  const navigate = useNavigate();
+export default function ForgotPassword() {
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPw, setShowPw] = useState(false);
+  const [status, setStatus] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  if (user) return <Navigate to="/dashboard" replace />;
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
-    if (!username.trim() || !password) {
-      setError('Please enter both username and password.');
+    setStatus('');
+    
+    if (!username.trim()) {
+      setError('Please enter your username.');
       return;
     }
+    
     setLoading(true);
     
-    const result = await login(username, password);
-    setLoading(false);
-    if (!result.ok) {
-      setError(result.error);
-    } else {
-      navigate('/dashboard');
+    try {
+      // Assuming we have an endpoint for this
+      const res = await fetch('http://localhost:3000/api/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username })
+      });
+      const data = await res.json();
+      
+      if (res.ok && data.success) {
+        setStatus('If the username exists, a password reset link has been sent to the associated email.');
+      } else {
+        setError(data.error || 'Failed to process request.');
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again later.');
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -51,11 +61,10 @@ export default function Login() {
 
         <div className="relative">
           <p className="font-display text-3xl font-medium leading-tight text-white">
-            From husk to harvest,<br /> every transaction tracked.
+            Secure access to your <br /> trading operations.
           </p>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-slate-50/70">
-            Manage inventory, purchases, sales, deliveries, and your people — all
-            in one place, built for the rhythm of the coconut trade.
+            Recover your account and get back to managing your coconut trade.
           </p>
         </div>
 
@@ -79,14 +88,18 @@ export default function Login() {
             </div>
           </div>
 
-          <h1 className="font-display text-2xl font-semibold text-slate-900">Welcome back</h1>
-          <p className="mt-1 text-sm text-slate-500">Sign in to manage today's trading operations.</p>
+          <Link to="/mamik" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800 mb-6 transition-colors">
+            <ArrowLeft size={16} /> Back to login
+          </Link>
+
+          <h1 className="font-display text-2xl font-semibold text-slate-900">Forgot Password</h1>
+          <p className="mt-1 text-sm text-slate-500">Enter your username and we'll send a link to reset your password.</p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-slate-900">Username</label>
               <div className="relative">
-                <User size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" />
+                <Mail size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" />
                 <input
                   autoFocus
                   value={username}
@@ -97,35 +110,12 @@ export default function Login() {
               </div>
             </div>
 
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-slate-900">Password</label>
-              <div className="relative">
-                <Lock size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" />
-                <input
-                  type={showPw ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full rounded-lg border border-slate-200 bg-white py-2.5 pl-9 pr-9 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-400/30"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPw((s) => !s)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400 hover:text-slate-700"
-                >
-                  {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between mt-4 mb-2">
-              <Link to="/forgot-password" className="text-sm font-medium text-blue-600 hover:text-blue-500">
-                Forgot your password?
-              </Link>
-            </div>
-            
             {error && (
               <p className="rounded-lg bg-red-100 px-3 py-2 text-xs font-medium text-red-600">{error}</p>
+            )}
+            
+            {status && (
+              <p className="rounded-lg bg-green-100 px-3 py-2 text-xs font-medium text-green-700">{status}</p>
             )}
 
             <button
@@ -133,7 +123,7 @@ export default function Login() {
               disabled={loading}
               className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-700 py-2.5 text-sm font-semibold text-white hover:bg-blue-600 transition-colors disabled:opacity-60"
             >
-              {loading ? 'Signing in…' : 'Sign in'} {!loading && <ArrowRight size={15} />}
+              {loading ? 'Sending…' : 'Send Reset Link'}
             </button>
           </form>
         </div>

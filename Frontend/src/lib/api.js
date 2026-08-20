@@ -2,7 +2,7 @@ const API_URL = 'http://localhost:3000/api';
 
 export const api = {
     async login(username, password) {
-        const res = await fetch(`${API_URL}/login`, {
+        const res = await fetch(`${API_URL}/mamik`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
